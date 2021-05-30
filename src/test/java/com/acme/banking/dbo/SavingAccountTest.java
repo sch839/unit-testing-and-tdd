@@ -13,6 +13,8 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 @DisplayName("Saving Account Test")
@@ -28,7 +30,10 @@ public class SavingAccountTest {
 
     @Test
     public void shouldStorePropertiesWhenCreated() {
-        Client client = new Client(1, "Test Client");
+        Client client = mock(Client.class);
+        when(client.getName()).thenReturn("Test Client");
+        when(client.getId()).thenReturn(1);
+
         SavingAccount savingAccount = new SavingAccount(1, client, 1);
         Assertions.assertThat(savingAccount)
                 .hasFieldOrPropertyWithValue("id", 1)
@@ -37,14 +42,16 @@ public class SavingAccountTest {
     }
 
     private Stream<SavingAccountsInputParams> getSavingAccountsInputParams() {
-        Client client = new Client(1, "Test Client");
+        Client client = mock(Client.class);
+        when(client.getName()).thenReturn("Test Client");
+        when(client.getId()).thenReturn(1);
+
         return Stream.of(
                 new SavingAccountsInputParams(-1, 1, client, "id < 0", "shouldNotCreateSavingAccountWhenIdIsNegative"),
                 new SavingAccountsInputParams(1, -1.0, client, "amount < 0", "shouldNotCreateSavingAccountWhenAmmountIsNegative"),
                 new SavingAccountsInputParams(1, 1.0, null, "client is null!", "shouldNotCreateSavingAccountWhenClientIsNull")
         );
     }
-
 }
 
 class SavingAccountsInputParams {
